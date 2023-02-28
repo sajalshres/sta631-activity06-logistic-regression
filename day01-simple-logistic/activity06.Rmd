@@ -1,8 +1,73 @@
 ---
 title: "Activity 6 - Logistic Regression"
 output: github_document
+editor_options: 
+  markdown: 
+    wrap: 80
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+## Load Necessary Packages
+
+```{r import, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(tidymodels)
+```
+
+## Load Data and
+
+```{r load-data, message=FALSE, warning=FALSE}
+resume <- readr::read_csv("https://www.openintro.org/data/csv/resume.csv")
+
+head(resume)
+```
+
+
+-   Is this an observational study or an experiment? Explain. Ans
+
+-   The variable of interest is `received_callback`. What type of variable is
+    this? What do the values represent?
+    
+    Boolean variable
+
+```{r}
+unique(resume$received_callback)
+```
+
+-   For `received_callback`, create an appropriate data visualization using
+    `{ggplot2}`. Be sure to provide more descriptive labels (both axes labels
+    and value labels - there are many ways to do this) as well as an appropriate
+    title.
+    
+```{r}
+resume %>%
+  ggplot(aes(x=received_callback))+
+  geom_bar()+
+  theme_minimal()
+```
+
+
+-   Below, I provide you with a numerical summary table that should reiterate
+    (i.e., provides numerical values) your plot in (3). Write the code to
+    produce this table.
+
+    | received_callback |    n | percent |
+    |:------------------|-----:|--------:|
+    | No                | 4478 |   91.95 |
+    | Yes               |  392 |    8.05 |
+    
+```{r}
+resume %>%
+  str_replace(received_callback, "0", "No") %>%
+  select(received_callback) %>%
+  group_by(received_callback) %>%
+  summarise(n=n()) %>%
+  mutate(persent = round((n/sum(n)) * 100, 2))
+
+```
+
+
+-   Using the output from (4) and (5), what do you notice?
